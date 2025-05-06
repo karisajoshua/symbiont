@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="flex flex-col min-h-screen bg-background">
       <StatusBar />
       <Header />
-      <main className="flex-grow grid-overlay">{children}</main>
+      <main className="flex-grow grid-overlay bg-background text-foreground">{children}</main>
       <Footer />
     </div>
   );

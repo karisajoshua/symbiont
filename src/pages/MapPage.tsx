@@ -2,10 +2,13 @@
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import SentimentMap from '@/components/map/SentimentMap';
+import ServerConnectionMap from '@/components/map/ServerConnectionMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import DataRibbon from '@/components/common/DataRibbon';
+import { Badge } from '@/components/ui/badge';
 
 const regionData = [
   { name: 'Abu Dhabi', positive: 785, neutral: 320, negative: 140, total: 1245 },
@@ -27,100 +30,137 @@ const platformData = [
 
 const MapPage = () => {
   const [timeRange, setTimeRange] = useState('week');
+  const [activeTab, setActiveTab] = useState('sentiment');
 
   return (
     <Layout>
-      <div className="bg-gray-50 py-8 min-h-screen">
-        <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">Regional Sentiment Heatmap</h1>
-            <p className="text-gray-600">
-              Visualize support levels by region across the UAE. The heatmap dynamically updates based on sentiment trends.
-            </p>
-          </div>
+      <DataRibbon position="top" />
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2 text-primary">STRATEGIC MAPPING INTERFACE</h1>
+          <p className="text-gray-400">
+            Geographic visualization of network activity and sentiment analysis. Classification level: RESTRICTED.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <SentimentMap />
-            </div>
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList className="bg-secondary border border-gray-700">
+            <TabsTrigger value="sentiment" className="data-[state=active]:bg-gray-800 data-[state=active]:text-primary">
+              SENTIMENT HEATMAP
+            </TabsTrigger>
+            <TabsTrigger value="network" className="data-[state=active]:bg-gray-800 data-[state=active]:text-primary">
+              SERVER NETWORK
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="sentiment" className="mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <SentimentMap />
+              </div>
 
-            <div>
-              <Card className="border border-gray-100 shadow-sm mb-6">
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-lg">Statistics by Region</CardTitle>
-                    <Select defaultValue={timeRange} onValueChange={setTimeRange}>
-                      <SelectTrigger className="w-36">
-                        <SelectValue placeholder="Select time range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="day">Last 24h</SelectItem>
-                        <SelectItem value="week">Last Week</SelectItem>
-                        <SelectItem value="month">Last Month</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {regionData.map((region) => (
-                      <div key={region.name} className="space-y-1">
-                        <div className="flex justify-between text-sm">
-                          <span>{region.name}</span>
-                          <span className="font-semibold">{region.total} mentions</span>
-                        </div>
-                        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div className="flex h-full">
-                            <div
-                              className="bg-positive"
-                              style={{ width: `${(region.positive / region.total) * 100}%` }}
-                            ></div>
-                            <div
-                              className="bg-gray-400"
-                              style={{ width: `${(region.neutral / region.total) * 100}%` }}
-                            ></div>
-                            <div
-                              className="bg-destructive"
-                              style={{ width: `${(region.negative / region.total) * 100}%` }}
-                            ></div>
+              <div>
+                <Card className="bg-secondary border border-gray-700 shadow-md mb-6">
+                  <CardHeader>
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-lg text-gray-200">Regional Statistics</CardTitle>
+                      <Select defaultValue={timeRange} onValueChange={setTimeRange}>
+                        <SelectTrigger className="w-36 bg-gray-800 border-gray-700 text-gray-300">
+                          <SelectValue placeholder="Select time range" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700 text-gray-300">
+                          <SelectItem value="day">Last 24h</SelectItem>
+                          <SelectItem value="week">Last Week</SelectItem>
+                          <SelectItem value="month">Last Month</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {regionData.map((region) => (
+                        <div key={region.name} className="space-y-1">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-300">{region.name}</span>
+                            <span className="font-semibold text-primary">{region.total} mentions</span>
+                          </div>
+                          <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="flex h-full">
+                              <div
+                                className="bg-positive"
+                                style={{ width: `${(region.positive / region.total) * 100}%` }}
+                              ></div>
+                              <div
+                                className="bg-gray-500"
+                                style={{ width: `${(region.neutral / region.total) * 100}%` }}
+                              ></div>
+                              <div
+                                className="bg-destructive"
+                                style={{ width: `${(region.negative / region.total) * 100}%` }}
+                              ></div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
 
-              <Card className="border border-gray-100 shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg">Mentions by Platform</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={platformData}
-                        margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
-                        layout="vertical"
-                      >
-                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                        <XAxis type="number" />
-                        <YAxis dataKey="name" type="category" width={80} />
-                        <Tooltip formatter={(value) => [`${value} mentions`, 'Volume']} />
-                        <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                          {platformData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
+                <Card className="bg-secondary border border-gray-700 shadow-md">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-gray-200">Platform Analysis</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={platformData}
+                          margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+                          layout="vertical"
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#333" />
+                          <XAxis type="number" stroke="#777" />
+                          <YAxis dataKey="name" type="category" width={80} stroke="#777" />
+                          <Tooltip 
+                            formatter={(value) => [`${value} mentions`, 'Volume']}
+                            contentStyle={{ backgroundColor: '#222', border: '1px solid #444' }}
+                            itemStyle={{ color: '#ddd' }}
+                          />
+                          <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                            {platformData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+          
+          <TabsContent value="network" className="mt-6">
+            <Card className="bg-secondary border border-gray-700 shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl text-gray-200">Global Server Network</CardTitle>
+                  <p className="text-sm text-gray-400 mt-1">Monitoring active connections and suspicious traffic patterns</p>
+                </div>
+                <Badge variant="outline" className="bg-gray-800 text-primary border-gray-700 animate-pulse-slow">
+                  LIVE TRAFFIC
+                </Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[600px]">
+                  <ServerConnectionMap />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
+      <DataRibbon position="bottom" />
     </Layout>
   );
 };
