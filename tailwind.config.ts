@@ -26,24 +26,24 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#007A3D', // Royal Green
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#33ff00', // Terminal Green
+					foreground: '#000000'
 				},
 				secondary: {
-					DEFAULT: '#FFD700', // Gold
-					foreground: '#000000'
+					DEFAULT: '#1a1f2c', // Dark Slate
+					foreground: '#ffffff'
 				},
 				destructive: {
 					DEFAULT: '#C0392B', // Crimson Red
 					foreground: 'hsl(var(--destructive-foreground))'
 				},
 				muted: {
-					DEFAULT: '#BDC3C7', // Soft Gray
-					foreground: 'hsl(var(--muted-foreground))'
+					DEFAULT: '#4d5566', // Dark Muted Blue
+					foreground: '#e0e0e0'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: '#ff3b30', // Alert Red
+					foreground: '#ffffff'
 				},
 				positive: {
 					DEFAULT: '#2ECC71', // Emerald
@@ -66,6 +66,11 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				terminal: {
+					green: '#33ff00',
+					dark: '#0c0c0c',
+					text: '#e0e0e0',
 				}
 			},
 			borderRadius: {
@@ -113,6 +118,18 @@ export default {
 				pulse: {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.7' }
+				},
+				'scan-line': {
+					'0%': { transform: 'translateY(0)' },
+					'100%': { transform: 'translateY(100%)' }
+				},
+				'data-stream': {
+					'0%': { transform: 'translateY(-100%)' },
+					'100%': { transform: 'translateY(100%)' }
+				},
+				'text-flicker': {
+					'0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': { opacity: '1' },
+					'20%, 21.999%, 63%, 63.999%, 65%, 69.999%': { opacity: '0.33' }
 				}
 			},
 			animation: {
@@ -120,7 +137,10 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.4s ease-out',
 				'slide-in': 'slide-in 0.4s ease-out',
-				'pulse-slow': 'pulse 3s infinite'
+				'pulse-slow': 'pulse 3s infinite',
+				'scan-line': 'scan-line 2s linear infinite',
+				'data-stream': 'data-stream 20s linear infinite',
+				'text-flicker': 'text-flicker 3s linear infinite'
 			}
 		}
 	},
