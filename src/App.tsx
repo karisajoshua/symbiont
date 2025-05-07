@@ -15,31 +15,33 @@ import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import { SimulatedDataProvider } from "./components/common/SimulatedDataProvider";
 
-const App = () => {
-  // Move QueryClient initialization inside the component
-  const [queryClient] = React.useState(() => new QueryClient());
+// Create QueryClient outside the component to avoid recreation on every render
+const queryClient = new QueryClient();
 
+const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <SimulatedDataProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/map" element={<MapPage />} />
-              <Route path="/insights" element={<InsightsPage />} />
-              <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </SimulatedDataProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <SimulatedDataProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/map" element={<MapPage />} />
+                <Route path="/insights" element={<InsightsPage />} />
+                <Route path="/reports" element={<ReportsPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </SimulatedDataProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 
