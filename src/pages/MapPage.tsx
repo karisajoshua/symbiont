@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import SentimentMap from '@/components/map/SentimentMap';
 import ServerConnectionMap from '@/components/map/ServerConnectionMap';
@@ -9,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import DataRibbon from '@/components/common/DataRibbon';
 import { Badge } from '@/components/ui/badge';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const regionData = [
   { name: 'Abu Dhabi', positive: 785, neutral: 320, negative: 140, total: 1245 },
@@ -36,11 +39,18 @@ const MapPage = () => {
     <Layout>
       <DataRibbon position="top" />
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2 text-primary">STRATEGIC MAPPING INTERFACE</h1>
-          <p className="text-gray-400">
-            Geographic visualization of network activity and sentiment analysis. Classification level: RESTRICTED.
-          </p>
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold mb-2 text-primary">STRATEGIC MAPPING INTERFACE</h1>
+            <p className="text-gray-400">
+              Geographic visualization of network activity and sentiment analysis. Classification level: RESTRICTED.
+            </p>
+          </div>
+          <Link to="/">
+            <Button variant="outline" size="sm" className="bg-gray-800 text-primary border-gray-700 hover:bg-gray-700">
+              <ArrowLeft size={16} className="mr-2" /> RETURN TO HOME
+            </Button>
+          </Link>
         </div>
 
         <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="mb-6">

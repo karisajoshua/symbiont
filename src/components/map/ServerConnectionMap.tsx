@@ -326,20 +326,29 @@ const ServerConnectionMap: React.FC = () => {
       className="relative w-full h-full overflow-hidden rounded-md border border-gray-700 bg-gray-900"
       onMouseMove={handleMouseMove}
     >
+      {/* World map background */}
+      <div className="absolute inset-0 opacity-20 z-0 bg-world-map" 
+           style={{
+             backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1000 500\' preserveAspectRatio=\'xMidYMid slice\'%3E%3Cpath d=\'M250,0 L280,20 L310,10 L330,40 L350,30 L390,50 L420,20 L460,30 L490,10 L520,50 L560,40 L590,20 L630,40 L670,30 L710,55 L750,35 L780,55 L830,30 L880,50 L920,25 L960,45 L1000,30 L1000,0 Z M0,90 L40,70 L80,95 L130,75 L170,100 L220,80 L260,105 L0,105 Z M700,110 L730,90 L770,120 L810,95 L850,115 L890,90 L930,110 L980,85 L1000,95 L1000,110 Z M100,180 L130,160 L160,180 L200,155 L240,175 L270,150 L310,170 L350,150 L390,170 L430,145 L470,160 L500,140 L540,150 L580,130 L620,145 L660,125 L700,140 L740,120 L780,140 L800,120 L850,130 L900,110 L950,125 L1000,110 L1000,180 Z M0,280 L30,250 L60,270 L100,245 L140,265 L180,240 L220,270 L250,240 L290,265 L330,240 L370,260 L410,235 L450,255 L490,230 L525,250 L560,225 L600,245 L640,220 L680,240 L710,215 L750,235 L790,210 L830,230 L870,210 L910,225 L950,200 L990,220 L1000,280 Z M0,340 L40,320 L80,340 L120,315 L160,335 L200,315 L240,335 L280,310 L320,330 L360,310 L400,335 L440,310 L480,330 L520,310 L560,330 L600,305 L640,325 L680,300 L720,320 L760,295 L800,315 L840,290 L880,310 L920,290 L960,310 L1000,290 L1000,340 Z M0,450 L50,425 L100,445 L150,420 L200,440 L250,415 L300,435 L350,410 L400,430 L450,405 L500,430 L550,410 L600,435 L650,410 L700,430 L750,405 L800,425 L850,400 L900,420 L950,400 L1000,420 L1000,450 Z\' fill=\'%2333ff00\' fill-opacity=\'0.1\'%3E%3C/path%3E%3C/svg%3E")',
+             backgroundSize: 'cover',
+             backgroundPosition: 'center'
+           }}
+      ></div>
+      
       <canvas 
         ref={canvasRef} 
         width={dimensions.width} 
         height={dimensions.height}
-        className="w-full h-full"
+        className="w-full h-full relative z-10"
       />
       
-      <div className="absolute bottom-2 left-2 text-xs text-gray-400 bg-black bg-opacity-50 p-1 rounded">
+      <div className="absolute bottom-2 left-2 text-xs text-gray-400 bg-black bg-opacity-50 p-1 rounded z-20">
         <div>ACTIVE CONNECTIONS: {connections.length}</div>
         <div>SECURE NODES: {serverNodes.filter(n => n.type === 'secure').length}</div>
         <div>COMPROMISED: {serverNodes.filter(n => n.type === 'compromised').length}</div>
       </div>
       
-      <div className="absolute top-2 right-2 flex items-center gap-4 bg-black bg-opacity-50 p-2 rounded text-xs">
+      <div className="absolute top-2 right-2 flex items-center gap-4 bg-black bg-opacity-50 p-2 rounded text-xs z-20">
         <div className="flex items-center">
           <span className="inline-block w-3 h-3 rounded-full bg-[rgba(51,255,0,0.8)] mr-1"></span>
           <span className="text-gray-300">SECURE</span>
