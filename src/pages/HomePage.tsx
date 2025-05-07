@@ -70,7 +70,7 @@ const HomePage = () => {
           </div>
           
           <h1 className="text-2xl md:text-3xl font-mono mb-4 text-primary">
-            INTELLIGENCE MONITORING PLATFORM
+            INTELLIGENCE MONITORING SYSTEM
             <span className="blink ml-1">_</span>
           </h1>
           
