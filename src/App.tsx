@@ -15,14 +15,14 @@ import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import { SimulatedDataProvider } from "./components/common/SimulatedDataProvider";
 
-// Create QueryClient outside the component to avoid recreation on every render
+// Create a new QueryClient instance outside the component to avoid recreation on render
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0}>
           <SimulatedDataProvider>
             <Toaster />
             <Sonner />
