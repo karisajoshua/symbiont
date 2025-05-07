@@ -1,10 +1,13 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import AgentAuthDialog from './AgentAuthDialog';
 
 const HeroSection = () => {
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  
   return (
     <section className="bg-gradient-to-r from-gray-900 to-gray-800 clip-path-slant text-white">
       <div className="container mx-auto px-4 py-16 md:py-24">
@@ -23,8 +26,13 @@ const HeroSection = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white/10">
-                <Link to="/contact">Request Access</Link>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="bg-transparent border-white text-white hover:bg-white/10"
+                onClick={() => setAuthDialogOpen(true)}
+              >
+                Request Access
               </Button>
             </div>
           </div>
@@ -52,6 +60,11 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+      
+      <AgentAuthDialog 
+        open={authDialogOpen} 
+        onOpenChange={setAuthDialogOpen} 
+      />
     </section>
   );
 };
