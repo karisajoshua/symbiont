@@ -212,10 +212,10 @@ const DashboardPage = () => {
                 <div className="mt-4 h-16 bg-black rounded border border-gray-700 p-2 font-mono text-xs text-green-500 overflow-hidden relative">
                   <div className="terminal-scanning absolute inset-0 opacity-10 pointer-events-none"></div>
                   <div className="space-y-1">
-                    <div>> system.check()</div>
-                    <div>> status: operational</div>
+                    <div>{"> system.check()"}</div>
+                    <div>{"> status: operational"}</div>
                     <div className="flex">
-                      <span>> _</span>
+                      <span>{"> _"}</span>
                       <span className="blink ml-1">|</span>
                     </div>
                   </div>
