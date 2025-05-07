@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface SentimentCardProps {
@@ -23,9 +23,9 @@ const SentimentCard: React.FC<SentimentCardProps> = ({
   engagement,
 }) => {
   const sentimentColor = {
-    positive: 'bg-positive/10 text-positive',
-    neutral: 'bg-gray-100 text-gray-600',
-    negative: 'bg-destructive/10 text-destructive',
+    positive: 'bg-green-900/30 text-primary border-primary',
+    neutral: 'bg-gray-800 text-gray-300 border-gray-600',
+    negative: 'bg-red-900/30 text-destructive border-destructive',
   };
 
   const platformIcon = {
@@ -47,33 +47,34 @@ const SentimentCard: React.FC<SentimentCardProps> = ({
   };
 
   return (
-    <Card className="overflow-hidden mb-4 border border-gray-100 hover:shadow-md transition-shadow">
-      <CardHeader className="bg-gray-50 p-3 flex flex-row items-center justify-between">
+    <Card className="overflow-hidden mb-4 border border-gray-700 bg-secondary hover:border-primary transition-colors">
+      <div className="p-3 flex flex-row items-center justify-between bg-gray-800 border-b border-gray-700">
         <div className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700">
+          <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-gray-300 font-mono">
             {username.charAt(0).toUpperCase()}
           </div>
           <div>
-            <CardTitle className="text-sm font-semibold">{username}</CardTitle>
+            <div className="text-sm font-mono text-gray-300">{username}</div>
             <div className="flex items-center text-xs text-gray-500 space-x-2">
               <span>{time}</span>
               <span>•</span>
-              <span>{location}</span>
+              <span className="text-primary">{location}</span>
             </div>
           </div>
         </div>
         <Badge variant="outline" className={sentimentColor[sentiment]}>
           {sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}
         </Badge>
-      </CardHeader>
-      <CardContent className="p-4">
-        <p className="text-sm text-gray-700 mb-3">{message}</p>
-        <div className="flex justify-between items-center text-xs text-gray-500">
+      </div>
+      <CardContent className="p-4 bg-gradient-to-b from-secondary to-gray-900">
+        <p className="text-sm text-gray-300 mb-3 font-mono leading-relaxed">{message}</p>
+        <div className="flex justify-between items-center text-xs text-gray-500 font-mono">
           <div className="flex items-center space-x-1">
             <span className="text-primary">{platformIcon[platform]}</span>
             <span>{platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
           </div>
-          <div>
+          <div className="flex items-center">
+            <span className="text-primary mr-1">⟁</span> {/* Unicode terminal-like engagement symbol */}
             <span>{engagement} engagements</span>
           </div>
         </div>

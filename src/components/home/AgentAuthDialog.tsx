@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Shield, Lock, ArrowRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 type AuthStage = 'form' | 'verifying-agent' | 'securing-connection' | 'connecting-tor' | 'complete';
 
@@ -17,6 +18,7 @@ interface AgentAuthDialogProps {
 
 const AgentAuthDialog = ({ open, onOpenChange, onSuccess }: AgentAuthDialogProps) => {
   const { toast } = useToast();
+  const { setIsAuthenticated } = useAuth();
   const [agentId, setAgentId] = useState('');
   const [accessCode, setAccessCode] = useState('');
   const [errors, setErrors] = useState({ agentId: '', accessCode: '' });
@@ -87,6 +89,8 @@ const AgentAuthDialog = ({ open, onOpenChange, onSuccess }: AgentAuthDialogProps
               setTimeout(() => {
                 setAuthStage('complete');
                 setIsSubmitting(false);
+                // Set authentication to true
+                setIsAuthenticated(true);
                 toast({
                   title: "Authentication Complete",
                   description: `Welcome Agent ${agentId}. Access granted.`,
@@ -108,7 +112,7 @@ const AgentAuthDialog = ({ open, onOpenChange, onSuccess }: AgentAuthDialogProps
     }, 30);
 
     return () => clearInterval(progressInterval);
-  }, [authStage, toast, agentId, onOpenChange, onSuccess]);
+  }, [authStage, toast, agentId, onOpenChange, onSuccess, setIsAuthenticated]);
 
   // Reset form when dialog is opened
   useEffect(() => {
