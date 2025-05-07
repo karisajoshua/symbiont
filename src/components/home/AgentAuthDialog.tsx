@@ -9,7 +9,13 @@ import { useToast } from '@/hooks/use-toast';
 
 type AuthStage = 'form' | 'verifying-agent' | 'securing-connection' | 'connecting-tor' | 'complete';
 
-const AgentAuthDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => {
+interface AgentAuthDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
+}
+
+const AgentAuthDialog = ({ open, onOpenChange, onSuccess }: AgentAuthDialogProps) => {
   const { toast } = useToast();
   const [agentId, setAgentId] = useState('');
   const [accessCode, setAccessCode] = useState('');
@@ -85,8 +91,13 @@ const AgentAuthDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: 
                   title: "Authentication Complete",
                   description: `Welcome Agent ${agentId}. Access granted.`,
                 });
-                // Close dialog after a delay
-                setTimeout(() => onOpenChange(false), 1500);
+                // Close dialog after a delay and trigger success callback
+                setTimeout(() => {
+                  onOpenChange(false);
+                  if (onSuccess) {
+                    onSuccess();
+                  }
+                }, 1500);
               }, 500);
               break;
           }
@@ -97,7 +108,7 @@ const AgentAuthDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: 
     }, 30);
 
     return () => clearInterval(progressInterval);
-  }, [authStage, toast, agentId, onOpenChange]);
+  }, [authStage, toast, agentId, onOpenChange, onSuccess]);
 
   // Reset form when dialog is opened
   useEffect(() => {

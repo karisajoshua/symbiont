@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Shield, Database, AlertTriangle, Search, Map, BarChart, FileText } from 'lucide-react';
 import DataRibbon from '@/components/common/DataRibbon';
+import AgentAuthDialog from '@/components/home/AgentAuthDialog';
 
 // Simulated sentiment metrics for home page
 const initialMetrics = {
@@ -22,6 +22,7 @@ const HomePage = () => {
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   // Generate random access code
   useEffect(() => {
@@ -46,11 +47,7 @@ const HomePage = () => {
   }, []);
 
   const handleAccessRequest = () => {
-    setIsAuthorizing(true);
-    setTimeout(() => {
-      setIsAuthorized(true);
-      setIsAuthorizing(false);
-    }, 2000);
+    setAuthDialogOpen(true);
   };
   
   return (
@@ -301,6 +298,15 @@ const HomePage = () => {
       </div>
       
       <DataRibbon position="bottom" />
+      
+      {/* Add the AgentAuthDialog component */}
+      <AgentAuthDialog 
+        open={authDialogOpen} 
+        onOpenChange={setAuthDialogOpen} 
+        onSuccess={() => {
+          setIsAuthorized(true);
+        }}
+      />
     </Layout>
   );
 };
