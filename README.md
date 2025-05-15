@@ -1,6 +1,6 @@
 # 📱 Symbiont
 
-Welcome to the official repository for the **Social Pulse Platform** – a robust social engagement and performance analytics platform designed for **GUT**. This platform provides real-time insights, user interaction tracking, and sentiment analysis across multiple social media channels.
+Welcome to the official repository for the **SYMBIONT** – a robust social engagement and performance analytics platform designed for **UAE**. This platform provides real-time insights, user interaction tracking, and sentiment analysis across multiple social media channels.
 
 ---
 
@@ -13,7 +13,7 @@ Welcome to the official repository for the **Social Pulse Platform** – a robus
 * Track content performance and brand visibility
 * Streamline reporting for marketing and communications strategy
 
-Whether you're launching a campaign, managing brand reputation, or gauging public response, Social Pulse ensures you stay informed and responsive.
+Whether you're launching a campaign, managing brand reputation, or gauging public response, SYMBIONT ensures you stay informed and responsive.
 
 ---
 
