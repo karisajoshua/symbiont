@@ -112,8 +112,8 @@ Want to improve Social Pulse? We welcome contributions!
 
 For questions, feedback, or partnerships:
 
-📧 **[info@gut-platform.org](mailto:info@gut-platform.org)**
-🌐 **[https://gut-platform.org](https://gut-platform.org)**
+📧 **[info@symbiont.org](mailto:info@symbiont.org)**
+🌐 **[https://symbiont.org](https://symbiont.org)**
 
 ---
 
@@ -121,6 +121,4 @@ For questions, feedback, or partnerships:
 
 © 2025 GUT – All Rights Reserved. This project is licensed under the [MIT License](LICENSE).
 
----
 
-Let me know if you'd like this customized for a particular use case, or if you want to add images, badges, or installation videos.
