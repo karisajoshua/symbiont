@@ -219,14 +219,14 @@ const MapPage = () => {
         </Tabs>
       </div>
       
-      {/* Terminal Dialogs */}
+      {/* Terminal Dialogs - All positioned on the left side */}
       <TerminalDialog
         open={terminalOpen}
         onOpenChange={setTerminalOpen}
         title="SYSTEM COMMAND"
-        position={{ top: '15%', left: '30%' }}
-        width="600px"
-        height="320px"
+        position={{ top: '10%', left: '5%' }}
+        width="500px"
+        height="250px"
         dataGenerator={generateSystemCommandData}
         updateInterval={6000}
       />
@@ -235,9 +235,9 @@ const MapPage = () => {
         open={serverDialogOpen}
         onOpenChange={setServerDialogOpen}
         title="SERVER NODE ACTIVITY"
-        position={{ top: '25%', right: '10%' }}
-        width="550px"
-        height="280px"
+        position={{ top: '32%', left: '5%' }}
+        width="500px"
+        height="250px"
         dataGenerator={generateServerNodeData}
         updateInterval={4000}
       />
@@ -246,7 +246,7 @@ const MapPage = () => {
         open={networkDialogOpen}
         onOpenChange={setNetworkDialogOpen}
         title="NETWORK TRAFFIC"
-        position={{ bottom: '15%', left: '5%' }}
+        position={{ top: '54%', left: '5%' }}
         width="500px"
         height="250px"
         dataGenerator={generateNetworkTrafficData}
@@ -257,9 +257,9 @@ const MapPage = () => {
         open={securityDialogOpen}
         onOpenChange={setSecurityDialogOpen}
         title="SECURITY ALERTS"
-        position={{ bottom: '25%', right: '5%' }}
-        width="480px"
-        height="220px"
+        position={{ top: '76%', left: '5%' }}
+        width="500px"
+        height="250px"
         dataGenerator={generateSecurityAlertData}
         updateInterval={7000}
       />
@@ -268,8 +268,8 @@ const MapPage = () => {
         open={agentDialogOpen}
         onOpenChange={setAgentDialogOpen}
         title="AGENT ACTIVITY"
-        position={{ top: '45%', left: '15%' }}
-        width="520px"
+        position={{ top: '98%', left: '5%' }}
+        width="500px"
         height="250px"
         dataGenerator={generateAgentActivityData}
         updateInterval={5000}

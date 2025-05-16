@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import TypewriterText from '../common/TypewriterText';
 import { X, ChevronDown, ChevronUp, Maximize2, Minimize2 } from 'lucide-react';
@@ -36,14 +35,18 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   const [currentData, setCurrentData] = useState<string[]>([]);
   const [dataHistory, setDataHistory] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const terminalContentRef = useRef<HTMLDivElement>(null);
 
-  // Initialize with some data
+  // Initialize with initial data
   useEffect(() => {
-    if (open && currentData.length === 0) {
+    if (open) {
       const initialData = dataGenerator();
-      setCurrentData([initialData[0]]);
+      if (initialData.length > 0 && !isTyping) {
+        setCurrentData([initialData[0]]);
+        setIsTyping(true);
+      }
     }
-  }, [open, dataGenerator, currentData.length]);
+  }, [open, dataGenerator]);
 
   // Update terminal data at intervals
   useEffect(() => {
@@ -52,17 +55,36 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
     const interval = setInterval(() => {
       if (!isTyping) {
         const newData = dataGenerator();
-        setCurrentData([newData[0]]);
-        setIsTyping(true);
+        if (newData.length > 0) {
+          setCurrentData([newData[0]]);
+          setIsTyping(true);
+        }
       }
     }, updateInterval);
 
     return () => clearInterval(interval);
   }, [open, dataGenerator, isTyping, updateInterval]);
 
+  // Scroll to bottom when new content is added
+  useEffect(() => {
+    if (terminalContentRef.current) {
+      terminalContentRef.current.scrollTop = terminalContentRef.current.scrollHeight;
+    }
+  }, [dataHistory]);
+
   const handleTypingComplete = () => {
-    setDataHistory(prev => [...prev, currentData[0]]);
-    setIsTyping(false);
+    if (currentData.length > 0) {
+      // Add the completed text to history
+      setDataHistory(prev => {
+        // Keep only the last 15 items to prevent too many items
+        const newHistory = [...prev, currentData[0]];
+        if (newHistory.length > 15) {
+          return newHistory.slice(newHistory.length - 15);
+        }
+        return newHistory;
+      });
+      setIsTyping(false);
+    }
   };
 
   const positionStyle = maximized ? 
@@ -123,13 +145,21 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
           </div>
         </div>
         
-        <div className="p-4 overflow-y-auto font-mono text-sm" style={{ height: minimized ? '0' : 'calc(100% - 40px)' }}>
+        <div 
+          ref={terminalContentRef}
+          className="p-4 overflow-y-auto font-mono text-sm" 
+          style={{ height: minimized ? '0' : 'calc(100% - 40px)' }}
+        >
           <div className="space-y-2">
             {dataHistory.map((text, i) => (
-              <div key={i} className="text-terminal-green opacity-80">{text}</div>
+              <div key={i} className="text-terminal-green">{text}</div>
             ))}
             {isTyping && currentData.length > 0 && (
-              <TypewriterText text={currentData[0]} onComplete={handleTypingComplete} />
+              <TypewriterText 
+                text={currentData[0]} 
+                onComplete={handleTypingComplete}
+                speed={20}
+              />
             )}
           </div>
         </div>
