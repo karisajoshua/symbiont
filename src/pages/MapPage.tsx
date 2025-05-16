@@ -10,8 +10,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import DataRibbon from '@/components/common/DataRibbon';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import TerminalDialog from '@/components/map/TerminalDialog';
+import { 
+  generateServerNodeData, 
+  generateNetworkTrafficData, 
+  generateSecurityAlertData, 
+  generateAgentActivityData,
+  generateSystemCommandData
+} from '@/services/terminalDataService';
 
 const regionData = [
   { name: 'Abu Dhabi', positive: 785, neutral: 320, negative: 140, total: 1245 },
@@ -34,6 +42,35 @@ const platformData = [
 const MapPage = () => {
   const [timeRange, setTimeRange] = useState('week');
   const [activeTab, setActiveTab] = useState('sentiment');
+  
+  // Terminal dialog states
+  const [terminalOpen, setTerminalOpen] = useState(false);
+  const [serverDialogOpen, setServerDialogOpen] = useState(false);
+  const [networkDialogOpen, setNetworkDialogOpen] = useState(false);
+  const [securityDialogOpen, setSecurityDialogOpen] = useState(false);
+  const [agentDialogOpen, setAgentDialogOpen] = useState(false);
+
+  const handleTerminalClick = () => {
+    // Play activation sound
+    const audio = new Audio('/terminal-activate.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(err => console.error("Audio play error:", err));
+    
+    // Open all dialogs with a slight delay between them
+    setTerminalOpen(true);
+    setTimeout(() => setServerDialogOpen(true), 300);
+    setTimeout(() => setNetworkDialogOpen(true), 600);
+    setTimeout(() => setSecurityDialogOpen(true), 900);
+    setTimeout(() => setAgentDialogOpen(true), 1200);
+  };
+
+  const closeAllTerminals = () => {
+    setTerminalOpen(false);
+    setServerDialogOpen(false);
+    setNetworkDialogOpen(false);
+    setSecurityDialogOpen(false);
+    setAgentDialogOpen(false);
+  };
 
   return (
     <Layout>
@@ -157,9 +194,20 @@ const MapPage = () => {
                   <CardTitle className="text-xl text-gray-200">Global Server Network</CardTitle>
                   <p className="text-sm text-gray-400 mt-1">Monitoring active connections and suspicious traffic patterns</p>
                 </div>
-                <Badge variant="outline" className="bg-gray-800 text-primary border-gray-700 animate-pulse-slow">
-                  LIVE TRAFFIC
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="bg-gray-800 text-terminal-green border-gray-700 hover:bg-gray-700 hover:text-terminal-green hover:border-terminal-green"
+                    onClick={handleTerminalClick}
+                  >
+                    <Terminal size={16} className="mr-2" />
+                    TERMINAL
+                  </Button>
+                  <Badge variant="outline" className="bg-gray-800 text-primary border-gray-700 animate-pulse-slow">
+                    LIVE TRAFFIC
+                  </Badge>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="h-[600px]">
@@ -170,6 +218,63 @@ const MapPage = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Terminal Dialogs */}
+      <TerminalDialog
+        open={terminalOpen}
+        onOpenChange={setTerminalOpen}
+        title="SYSTEM COMMAND"
+        position={{ top: '15%', left: '30%' }}
+        width="600px"
+        height="320px"
+        dataGenerator={generateSystemCommandData}
+        updateInterval={6000}
+      />
+      
+      <TerminalDialog
+        open={serverDialogOpen}
+        onOpenChange={setServerDialogOpen}
+        title="SERVER NODE ACTIVITY"
+        position={{ top: '25%', right: '10%' }}
+        width="550px"
+        height="280px"
+        dataGenerator={generateServerNodeData}
+        updateInterval={4000}
+      />
+      
+      <TerminalDialog
+        open={networkDialogOpen}
+        onOpenChange={setNetworkDialogOpen}
+        title="NETWORK TRAFFIC"
+        position={{ bottom: '15%', left: '5%' }}
+        width="500px"
+        height="250px"
+        dataGenerator={generateNetworkTrafficData}
+        updateInterval={3000}
+      />
+      
+      <TerminalDialog
+        open={securityDialogOpen}
+        onOpenChange={setSecurityDialogOpen}
+        title="SECURITY ALERTS"
+        position={{ bottom: '25%', right: '5%' }}
+        width="480px"
+        height="220px"
+        dataGenerator={generateSecurityAlertData}
+        updateInterval={7000}
+      />
+      
+      <TerminalDialog
+        open={agentDialogOpen}
+        onOpenChange={setAgentDialogOpen}
+        title="AGENT ACTIVITY"
+        position={{ top: '45%', left: '15%' }}
+        width="520px"
+        height="250px"
+        dataGenerator={generateAgentActivityData}
+        updateInterval={5000}
+      />
+      
       <DataRibbon position="bottom" />
     </Layout>
   );

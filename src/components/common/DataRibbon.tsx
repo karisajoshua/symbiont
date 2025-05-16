@@ -38,7 +38,6 @@ const DataRibbon: React.FC<DataRibbonProps> = ({ position = 'top' }) => {
           <div 
             key={index} 
             className="text-terminal-green opacity-70 px-2"
-            style={{ animationDelay: `${index * 0.1}s` }}
           >
             {data}
           </div>
