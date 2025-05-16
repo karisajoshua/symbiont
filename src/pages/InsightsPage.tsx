@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import DataRibbon from '@/components/common/DataRibbon';
 
 // Mock insights data
 const insightsData = [
@@ -70,6 +72,7 @@ const InsightsPage = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   // Filter insights based on active filters
   const filteredInsights = insightsData.filter((insight) => {
@@ -94,22 +97,34 @@ const InsightsPage = () => {
 
   return (
     <Layout>
-      <div className="bg-gray-50 py-8 min-h-screen">
+      <DataRibbon position="top" />
+      <div className="bg-background min-h-screen py-8">
         <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">AI-Powered Insights & Recommendations</h1>
-            <p className="text-gray-600">
-              AI-generated insights to help identify trends, alerts, and recommended actions based on social sentiment analysis.
-            </p>
+          <div className="flex items-center mb-6">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mr-4 bg-secondary border-gray-700 text-primary hover:bg-gray-700"
+              onClick={() => navigate('/dashboard')}
+            >
+              <ArrowLeft size={16} className="mr-1" />
+              Return to Dashboard
+            </Button>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2 text-primary">AI-Powered Insights</h1>
+              <p className="text-gray-400 text-sm">
+                Real-time sentiment analysis with trend identification and recommendations
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
             <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full md:w-auto">
-              <TabsList>
-                <TabsTrigger value="all">All Insights</TabsTrigger>
-                <TabsTrigger value="action">Actions</TabsTrigger>
-                <TabsTrigger value="alert">Alerts</TabsTrigger>
-                <TabsTrigger value="trend">Trends</TabsTrigger>
+              <TabsList className="bg-secondary border border-gray-700">
+                <TabsTrigger value="all" className="data-[state=active]:bg-gray-800 data-[state=active]:text-primary">All Insights</TabsTrigger>
+                <TabsTrigger value="action" className="data-[state=active]:bg-gray-800 data-[state=active]:text-primary">Actions</TabsTrigger>
+                <TabsTrigger value="alert" className="data-[state=active]:bg-gray-800 data-[state=active]:text-primary">Alerts</TabsTrigger>
+                <TabsTrigger value="trend" className="data-[state=active]:bg-gray-800 data-[state=active]:text-primary">Trends</TabsTrigger>
               </TabsList>
             </Tabs>
             
@@ -120,15 +135,15 @@ const InsightsPage = () => {
                   placeholder="Search insights..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8"
+                  className="pl-8 bg-secondary border-gray-700 text-foreground"
                 />
               </div>
               
               <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-                <SelectTrigger className="w-36">
+                <SelectTrigger className="w-36 bg-secondary border-gray-700 text-foreground">
                   <SelectValue placeholder="Priority" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-secondary border-gray-700 text-foreground">
                   <SelectItem value="all">All Priorities</SelectItem>
                   <SelectItem value="high">High</SelectItem>
                   <SelectItem value="medium">Medium</SelectItem>
@@ -139,13 +154,16 @@ const InsightsPage = () => {
           </div>
 
           {filteredInsights.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No insights found matching your filters</p>
-              <Button onClick={() => {
-                setActiveTab('all');
-                setPriorityFilter('all');
-                setSearchQuery('');
-              }}>
+            <div className="text-center py-12 bg-secondary border border-gray-700 rounded-lg">
+              <p className="text-gray-400 mb-4">No insights found matching your filters</p>
+              <Button 
+                onClick={() => {
+                  setActiveTab('all');
+                  setPriorityFilter('all');
+                  setSearchQuery('');
+                }}
+                className="bg-gray-800 border border-gray-700 text-primary hover:bg-gray-700"
+              >
                 Reset Filters
               </Button>
             </div>
@@ -166,6 +184,7 @@ const InsightsPage = () => {
           )}
         </div>
       </div>
+      <DataRibbon position="bottom" />
     </Layout>
   );
 };

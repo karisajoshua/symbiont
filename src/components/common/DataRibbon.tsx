@@ -22,19 +22,11 @@ const DataRibbon: React.FC<DataRibbonProps> = ({ position = 'top' }) => {
     const initialStream = Array(20).fill('').map(() => generateRandomHex(32));
     setDataStream(initialStream);
     
-    // Update data stream periodically
+    // Update entire data stream every 5 seconds
     const interval = setInterval(() => {
-      setDataStream(prev => {
-        const newStream = [...prev];
-        // Replace random elements with new data
-        const replaceCount = Math.floor(Math.random() * 5) + 1;
-        for (let i = 0; i < replaceCount; i++) {
-          const replaceIndex = Math.floor(Math.random() * newStream.length);
-          newStream[replaceIndex] = generateRandomHex(32);
-        }
-        return newStream;
-      });
-    }, 1000);
+      const newStream = Array(20).fill('').map(() => generateRandomHex(32));
+      setDataStream(newStream);
+    }, 5000);
     
     return () => clearInterval(interval);
   }, []);
@@ -45,7 +37,7 @@ const DataRibbon: React.FC<DataRibbonProps> = ({ position = 'top' }) => {
         {dataStream.map((data, index) => (
           <div 
             key={index} 
-            className="text-terminal-green opacity-70 animate-data-stream px-2"
+            className="text-terminal-green opacity-70 px-2"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             {data}
