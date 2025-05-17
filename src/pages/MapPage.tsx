@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -219,7 +218,7 @@ const MapPage = () => {
         </Tabs>
       </div>
       
-      {/* Terminal Dialogs - All positioned on the left side */}
+      {/* Terminal Dialogs - All positioned on the left side with vertical spacing */}
       <TerminalDialog
         open={terminalOpen}
         onOpenChange={setTerminalOpen}

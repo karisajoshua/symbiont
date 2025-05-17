@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import TypewriterText from '../common/TypewriterText';
@@ -35,6 +36,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   const [currentData, setCurrentData] = useState<string[]>([]);
   const [dataHistory, setDataHistory] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [newData, setNewData] = useState(false);
   const terminalContentRef = useRef<HTMLDivElement>(null);
 
   // Initialize with initial data
@@ -58,6 +60,10 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
         if (newData.length > 0) {
           setCurrentData([newData[0]]);
           setIsTyping(true);
+          setNewData(true); // Indicate new data is available
+          
+          // Reset the new data notification after 2 seconds
+          setTimeout(() => setNewData(false), 2000);
         }
       }
     }, updateInterval);
@@ -78,8 +84,8 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
       setDataHistory(prev => {
         // Keep only the last 15 items to prevent too many items
         const newHistory = [...prev, currentData[0]];
-        if (newHistory.length > 15) {
-          return newHistory.slice(newHistory.length - 15);
+        if (newHistory.length > 25) {
+          return newHistory.slice(newHistory.length - 25);
         }
         return newHistory;
       });
@@ -98,12 +104,13 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
       <DialogContent 
         className={cn(
           "bg-gray-900/95 border border-terminal-green/40 text-terminal-green shadow-lg shadow-terminal-green/20 p-0 m-0 max-w-none",
-          minimized ? "h-12 overflow-hidden" : ""
+          minimized ? "h-12 overflow-hidden" : "",
+          newData ? "border-terminal-green border-2 shadow-terminal-green/50" : ""
         )}
         style={positionStyle}
         hideCloseButton={true}
       >
-        <div className="flex justify-between items-center bg-gray-800/70 px-4 py-2 border-b border-terminal-green/30 cursor-move">
+        <div className="flex justify-between items-center bg-gray-800/90 px-4 py-2 border-b border-terminal-green/30 cursor-move">
           <div className="flex items-center">
             <span className="h-3 w-3 rounded-full bg-destructive mr-2"></span>
             <span className="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
@@ -147,7 +154,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
         
         <div 
           ref={terminalContentRef}
-          className="p-4 overflow-y-auto font-mono text-sm" 
+          className="p-4 overflow-y-auto font-mono text-sm bg-black/90" 
           style={{ height: minimized ? '0' : 'calc(100% - 40px)' }}
         >
           <div className="space-y-2">
@@ -159,8 +166,10 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
                 text={currentData[0]} 
                 onComplete={handleTypingComplete}
                 speed={20}
+                className="text-terminal-green"
               />
             )}
+            <span className="inline-block h-4 w-2 bg-terminal-green ml-1 blink"></span>
           </div>
         </div>
       </DialogContent>
