@@ -20,10 +20,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Create audio element for typing sound
-    audioRef.current = new Audio('/typing-sound.mp3');
-    audioRef.current.volume = 0.05; // Lower volume
-    
+    // Skip audio creation to avoid errors
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -47,17 +44,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
         setDisplayedText(prev => prev + text[currentIndex]);
         setCurrentIndex(prev => prev + 1);
         
-        // Play typing sound
-        if (audioRef.current) {
-          // Only restart the sound every few characters to avoid audio stuttering
-          if (currentIndex % 4 === 0) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play().catch(err => {
-              // Silently handle error - browsers may block autoplay
-              console.error("Audio play error:", err);
-            });
-          }
-        }
+        // Skip audio playback to avoid errors
       } else {
         // End of text reached
         if (intervalRef.current !== null) {

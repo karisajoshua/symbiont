@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import TypewriterText from '../common/TypewriterText';
 import { X, ChevronDown, ChevronUp, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Draggable from 'react-draggable';
+import TypewriterText from '../common/TypewriterText';
 
 interface TerminalDialogProps {
   open: boolean;
@@ -40,10 +39,16 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   const terminalContentRef = useRef<HTMLDivElement>(null);
   const nodeRef = useRef(null);
   const [dragging, setDragging] = useState(false);
+  
+  // Debug log when dialog state changes
+  useEffect(() => {
+    console.log(`Terminal ${title} open state: ${open}`);
+  }, [open, title]);
 
   // Initialize with initial data
   useEffect(() => {
     if (open) {
+      console.log(`Initializing terminal: ${title}`);
       const initialData = dataGenerator();
       setDataHistory([]); // Clear history when reopened
       if (initialData.length > 0 && !isTyping) {
@@ -51,7 +56,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
         setIsTyping(true);
       }
     }
-  }, [open, dataGenerator]);
+  }, [open, dataGenerator, title]);
 
   // Update terminal data at intervals
   useEffect(() => {
@@ -83,6 +88,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
 
   const handleTypingComplete = () => {
     if (currentData.length > 0) {
+      console.log(`Typing complete for: ${currentData[0].substring(0, 20)}...`);
       // Add the completed text to history
       setDataHistory(prev => {
         // Keep only the last 30 items to prevent too many items
@@ -107,7 +113,10 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
     <Draggable 
       nodeRef={nodeRef}
       handle=".drag-handle"
-      defaultPosition={{x: parseInt(position.left || '0'), y: parseInt(position.top || '0')}}
+      defaultPosition={{
+        x: parseInt(position.left || '0'), 
+        y: parseInt(position.top || '0')
+      }}
       onStart={() => setDragging(true)}
       onStop={() => setDragging(false)}
       bounds="parent"

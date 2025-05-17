@@ -51,17 +51,28 @@ const MapPage = () => {
   const [agentDialogOpen, setAgentDialogOpen] = useState(false);
 
   const handleTerminalClick = () => {
-    // Play activation sound
-    const audio = new Audio('/terminal-activate.mp3');
-    audio.volume = 0.3;
-    audio.play().catch(err => console.error("Audio play error:", err));
+    console.log("Terminal button clicked"); // Debug log
     
-    // Open all dialogs with a slight delay between them
-    setTerminalOpen(true);
-    setTimeout(() => setServerDialogOpen(true), 300);
-    setTimeout(() => setNetworkDialogOpen(true), 600);
-    setTimeout(() => setSecurityDialogOpen(true), 900);
-    setTimeout(() => setAgentDialogOpen(true), 1200);
+    // Play activation sound with error handling
+    try {
+      const audio = new Audio('/terminal-activate.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(err => console.error("Audio play error:", err));
+    } catch (error) {
+      console.error("Error playing audio:", error);
+    }
+    
+    // Toggle terminals - if open, close them, if closed, open them
+    if (terminalOpen) {
+      closeAllTerminals();
+    } else {
+      // Open all dialogs with a slight delay between them
+      setTerminalOpen(true);
+      setTimeout(() => setServerDialogOpen(true), 300);
+      setTimeout(() => setNetworkDialogOpen(true), 600);
+      setTimeout(() => setSecurityDialogOpen(true), 900);
+      setTimeout(() => setAgentDialogOpen(true), 1200);
+    }
   };
 
   const closeAllTerminals = () => {
@@ -218,7 +229,7 @@ const MapPage = () => {
           </TabsContent>
         </Tabs>
         
-        {/* Terminal Dialogs - All positioned on the extreme left with vertical spacing */}
+        {/* Terminal Dialogs - All positioned on the extreme left */}
         <TerminalDialog
           open={terminalOpen}
           onOpenChange={setTerminalOpen}
