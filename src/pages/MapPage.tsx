@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
@@ -74,7 +75,7 @@ const MapPage = () => {
   return (
     <Layout>
       <DataRibbon position="top" />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative" style={{ minHeight: '80vh' }}>
         <div className="mb-6 flex justify-between items-center">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-primary">STRATEGIC MAPPING INTERFACE</h1>
@@ -216,63 +217,63 @@ const MapPage = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Terminal Dialogs - All positioned on the extreme left with vertical spacing */}
+        <TerminalDialog
+          open={terminalOpen}
+          onOpenChange={setTerminalOpen}
+          title="SYSTEM COMMAND"
+          position={{ top: '100', left: '20' }}
+          width="450px"
+          height="250px"
+          dataGenerator={generateSystemCommandData}
+          updateInterval={6000}
+        />
+        
+        <TerminalDialog
+          open={serverDialogOpen}
+          onOpenChange={setServerDialogOpen}
+          title="SERVER NODE ACTIVITY"
+          position={{ top: '150', left: '20' }}
+          width="450px"
+          height="250px"
+          dataGenerator={generateServerNodeData}
+          updateInterval={4000}
+        />
+        
+        <TerminalDialog
+          open={networkDialogOpen}
+          onOpenChange={setNetworkDialogOpen}
+          title="NETWORK TRAFFIC"
+          position={{ top: '200', left: '20' }}
+          width="450px"
+          height="250px"
+          dataGenerator={generateNetworkTrafficData}
+          updateInterval={3000}
+        />
+        
+        <TerminalDialog
+          open={securityDialogOpen}
+          onOpenChange={setSecurityDialogOpen}
+          title="SECURITY ALERTS"
+          position={{ top: '250', left: '20' }}
+          width="450px"
+          height="250px"
+          dataGenerator={generateSecurityAlertData}
+          updateInterval={7000}
+        />
+        
+        <TerminalDialog
+          open={agentDialogOpen}
+          onOpenChange={setAgentDialogOpen}
+          title="AGENT ACTIVITY"
+          position={{ top: '300', left: '20' }}
+          width="450px"
+          height="250px"
+          dataGenerator={generateAgentActivityData}
+          updateInterval={5000}
+        />
       </div>
-      
-      {/* Terminal Dialogs - All positioned on the left side with vertical spacing */}
-      <TerminalDialog
-        open={terminalOpen}
-        onOpenChange={setTerminalOpen}
-        title="SYSTEM COMMAND"
-        position={{ top: '10%', left: '5%' }}
-        width="500px"
-        height="250px"
-        dataGenerator={generateSystemCommandData}
-        updateInterval={6000}
-      />
-      
-      <TerminalDialog
-        open={serverDialogOpen}
-        onOpenChange={setServerDialogOpen}
-        title="SERVER NODE ACTIVITY"
-        position={{ top: '32%', left: '5%' }}
-        width="500px"
-        height="250px"
-        dataGenerator={generateServerNodeData}
-        updateInterval={4000}
-      />
-      
-      <TerminalDialog
-        open={networkDialogOpen}
-        onOpenChange={setNetworkDialogOpen}
-        title="NETWORK TRAFFIC"
-        position={{ top: '54%', left: '5%' }}
-        width="500px"
-        height="250px"
-        dataGenerator={generateNetworkTrafficData}
-        updateInterval={3000}
-      />
-      
-      <TerminalDialog
-        open={securityDialogOpen}
-        onOpenChange={setSecurityDialogOpen}
-        title="SECURITY ALERTS"
-        position={{ top: '76%', left: '5%' }}
-        width="500px"
-        height="250px"
-        dataGenerator={generateSecurityAlertData}
-        updateInterval={7000}
-      />
-      
-      <TerminalDialog
-        open={agentDialogOpen}
-        onOpenChange={setAgentDialogOpen}
-        title="AGENT ACTIVITY"
-        position={{ top: '98%', left: '5%' }}
-        width="500px"
-        height="250px"
-        dataGenerator={generateAgentActivityData}
-        updateInterval={5000}
-      />
       
       <DataRibbon position="bottom" />
     </Layout>

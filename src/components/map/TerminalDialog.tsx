@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import TypewriterText from '../common/TypewriterText';
 import { X, ChevronDown, ChevronUp, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Draggable from 'react-draggable';
 
 interface TerminalDialogProps {
   open: boolean;
@@ -25,7 +25,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   open,
   onOpenChange,
   title,
-  position = { top: '20%', left: '20%' },
+  position = { top: '20%', left: '0%' },
   width = '500px',
   height = '300px',
   dataGenerator,
@@ -38,11 +38,14 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [newData, setNewData] = useState(false);
   const terminalContentRef = useRef<HTMLDivElement>(null);
+  const nodeRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
 
   // Initialize with initial data
   useEffect(() => {
     if (open) {
       const initialData = dataGenerator();
+      setDataHistory([]); // Clear history when reopened
       if (initialData.length > 0 && !isTyping) {
         setCurrentData([initialData[0]]);
         setIsTyping(true);
@@ -82,10 +85,10 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
     if (currentData.length > 0) {
       // Add the completed text to history
       setDataHistory(prev => {
-        // Keep only the last 15 items to prevent too many items
+        // Keep only the last 30 items to prevent too many items
         const newHistory = [...prev, currentData[0]];
-        if (newHistory.length > 25) {
-          return newHistory.slice(newHistory.length - 25);
+        if (newHistory.length > 30) {
+          return newHistory.slice(newHistory.length - 30);
         }
         return newHistory;
       });
@@ -93,87 +96,106 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
     }
   };
 
-  const positionStyle = maximized ? 
-    { top: '5%', left: '5%', right: '5%', bottom: '5%', width: 'auto', height: 'auto' } : 
-    { ...position, width, height };
-
+  // Don't use Dialog component, directly render the draggable component
   if (!open) return null;
 
+  const positionStyle = maximized ? 
+    { width: '90%', height: '90%' } : 
+    { width, height };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+    <Draggable 
+      nodeRef={nodeRef}
+      handle=".drag-handle"
+      defaultPosition={{x: parseInt(position.left || '0'), y: parseInt(position.top || '0')}}
+      onStart={() => setDragging(true)}
+      onStop={() => setDragging(false)}
+      bounds="parent"
+    >
+      <div 
+        ref={nodeRef}
         className={cn(
-          "bg-gray-900/95 border border-terminal-green/40 text-terminal-green shadow-lg shadow-terminal-green/20 p-0 m-0 max-w-none",
+          "fixed z-50 shadow-lg",
           minimized ? "h-12 overflow-hidden" : "",
-          newData ? "border-terminal-green border-2 shadow-terminal-green/50" : ""
+          newData ? "border-terminal-green shadow-lg shadow-terminal-green/40" : "",
+          dragging ? "cursor-grabbing" : "cursor-auto"
         )}
         style={positionStyle}
-        hideCloseButton={true}
       >
-        <div className="flex justify-between items-center bg-gray-800/90 px-4 py-2 border-b border-terminal-green/30 cursor-move">
-          <div className="flex items-center">
-            <span className="h-3 w-3 rounded-full bg-destructive mr-2"></span>
-            <span className="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-            <span className="h-3 w-3 rounded-full bg-positive mr-2"></span>
-            <h3 className="text-sm font-mono text-terminal-green">TERMINAL:: {title}</h3>
-          </div>
-          <div className="flex items-center space-x-2">
-            {maximized ? (
-              <Minimize2 
-                size={14} 
-                className="text-gray-400 hover:text-terminal-green cursor-pointer"
-                onClick={() => setMaximized(false)} 
-              />
-            ) : (
-              <Maximize2 
-                size={14} 
-                className="text-gray-400 hover:text-terminal-green cursor-pointer"
-                onClick={() => { setMaximized(true); setMinimized(false); }} 
-              />
-            )}
-            {minimized ? (
-              <ChevronUp 
-                size={14} 
-                className="text-gray-400 hover:text-terminal-green cursor-pointer"
-                onClick={() => setMinimized(false)} 
-              />
-            ) : (
-              <ChevronDown 
-                size={14} 
-                className="text-gray-400 hover:text-terminal-green cursor-pointer"
-                onClick={() => setMinimized(true)} 
-              />
-            )}
-            <X 
-              size={14} 
-              className="text-gray-400 hover:text-destructive cursor-pointer"
-              onClick={() => onOpenChange(false)} 
-            />
-          </div>
-        </div>
-        
         <div 
-          ref={terminalContentRef}
-          className="p-4 overflow-y-auto font-mono text-sm bg-black/90" 
-          style={{ height: minimized ? '0' : 'calc(100% - 40px)' }}
+          className={cn(
+            "bg-black/95 border border-terminal-green/60 text-terminal-green rounded-sm",
+            "flex flex-col w-full h-full overflow-hidden",
+            newData && "shadow-[0_0_15px_rgba(51,255,0,0.5)]"
+          )}
         >
-          <div className="space-y-2">
-            {dataHistory.map((text, i) => (
-              <div key={i} className="text-terminal-green">{text}</div>
-            ))}
-            {isTyping && currentData.length > 0 && (
-              <TypewriterText 
-                text={currentData[0]} 
-                onComplete={handleTypingComplete}
-                speed={20}
-                className="text-terminal-green"
+          {/* Terminal Header */}
+          <div className="drag-handle flex justify-between items-center bg-black px-4 py-2 border-b border-terminal-green/60 cursor-grab">
+            <div className="flex items-center">
+              <span className="h-3 w-3 rounded-full bg-destructive mr-2"></span>
+              <span className="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
+              <span className="h-3 w-3 rounded-full bg-positive mr-2"></span>
+              <h3 className="text-sm font-mono text-terminal-green tracking-wider">TERMINAL:: {title}</h3>
+            </div>
+            <div className="flex items-center space-x-2">
+              {maximized ? (
+                <Minimize2 
+                  size={14} 
+                  className="text-terminal-green/70 hover:text-terminal-green cursor-pointer"
+                  onClick={() => setMaximized(false)} 
+                />
+              ) : (
+                <Maximize2 
+                  size={14} 
+                  className="text-terminal-green/70 hover:text-terminal-green cursor-pointer"
+                  onClick={() => { setMaximized(true); setMinimized(false); }} 
+                />
+              )}
+              {minimized ? (
+                <ChevronUp 
+                  size={14} 
+                  className="text-terminal-green/70 hover:text-terminal-green cursor-pointer"
+                  onClick={() => setMinimized(false)} 
+                />
+              ) : (
+                <ChevronDown 
+                  size={14} 
+                  className="text-terminal-green/70 hover:text-terminal-green cursor-pointer"
+                  onClick={() => setMinimized(true)} 
+                />
+              )}
+              <X 
+                size={14} 
+                className="text-terminal-green/70 hover:text-destructive cursor-pointer"
+                onClick={() => onOpenChange(false)} 
               />
-            )}
-            <span className="inline-block h-4 w-2 bg-terminal-green ml-1 blink"></span>
+            </div>
+          </div>
+          
+          {/* Terminal Content */}
+          <div 
+            ref={terminalContentRef}
+            className="p-4 overflow-y-auto font-mono text-sm bg-black/95 flex-grow" 
+            style={{ height: minimized ? '0' : 'auto' }}
+          >
+            <div className="space-y-2">
+              {dataHistory.map((text, i) => (
+                <div key={i} className="text-terminal-green">{text}</div>
+              ))}
+              {isTyping && currentData.length > 0 && (
+                <TypewriterText 
+                  text={currentData[0]} 
+                  onComplete={handleTypingComplete}
+                  speed={10}
+                  className="text-terminal-green"
+                />
+              )}
+              <span className="inline-block h-4 w-2 bg-terminal-green ml-1 blink"></span>
+            </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Draggable>
   );
 };
 

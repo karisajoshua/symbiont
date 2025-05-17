@@ -10,7 +10,7 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({
   text,
-  speed = 30,
+  speed = 15, // Slightly faster typing
   onComplete,
   className = "text-terminal-green"
 }) => {
@@ -22,7 +22,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   useEffect(() => {
     // Create audio element for typing sound
     audioRef.current = new Audio('/typing-sound.mp3');
-    audioRef.current.volume = 0.1;
+    audioRef.current.volume = 0.05; // Lower volume
     
     return () => {
       if (audioRef.current) {
@@ -50,7 +50,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
         // Play typing sound
         if (audioRef.current) {
           // Only restart the sound every few characters to avoid audio stuttering
-          if (currentIndex % 3 === 0) {
+          if (currentIndex % 4 === 0) {
             audioRef.current.currentTime = 0;
             audioRef.current.play().catch(err => {
               // Silently handle error - browsers may block autoplay
