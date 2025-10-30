@@ -47,8 +47,8 @@ const SentimentCard: React.FC<SentimentCardProps> = ({
   };
 
   return (
-    <Card className="overflow-hidden mb-4 border border-gray-700 bg-secondary hover:border-primary transition-colors">
-      <div className="p-3 flex flex-row items-center justify-between bg-gray-800 border-b border-gray-700">
+    <Card className="overflow-hidden mb-4 border border-gray-700 bg-secondary/80 backdrop-blur-sm hover:border-primary hover:shadow-[0_0_15px_rgba(51,255,0,0.2)] transition-all duration-300 animate-fade-in">
+      <div className="p-3 flex flex-row items-center justify-between bg-gray-800/80 backdrop-blur-sm border-b border-gray-700">
         <div className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-gray-300 font-mono">
             {username.charAt(0).toUpperCase()}

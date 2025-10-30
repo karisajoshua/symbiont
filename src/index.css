@@ -162,3 +162,61 @@
   @apply bg-red-500;
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
 }
+
+/* Glassmorphism effects */
+.glass-card {
+  background: rgba(26, 31, 44, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(51, 255, 0, 0.1);
+}
+
+.glass-card-hover {
+  transition: all 0.3s ease;
+}
+
+.glass-card-hover:hover {
+  background: rgba(26, 31, 44, 0.85);
+  border-color: rgba(51, 255, 0, 0.3);
+  box-shadow: 0 0 20px rgba(51, 255, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Particle effect background */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.particle {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 10px rgba(51, 255, 0, 0.3),
+              0 0 20px rgba(51, 255, 0, 0.2),
+              0 0 30px rgba(51, 255, 0, 0.1);
+}
+
+.glow-destructive {
+  box-shadow: 0 0 10px rgba(192, 57, 43, 0.3),
+              0 0 20px rgba(192, 57, 43, 0.2),
+              0 0 30px rgba(192, 57, 43, 0.1);
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(51, 255, 0, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 3s infinite;
+}

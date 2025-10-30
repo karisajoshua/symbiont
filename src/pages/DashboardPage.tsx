@@ -1,13 +1,18 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '@/components/layout/Layout';
 import SentimentFilter, { FilterState } from '@/components/dashboard/SentimentFilter';
 import SentimentCard from '@/components/dashboard/SentimentCard';
 import SentimentMetrics from '@/components/dashboard/SentimentMetrics';
+import AnimatedMetricCard from '@/components/dashboard/AnimatedMetricCard';
+import LiveFeedTicker from '@/components/dashboard/LiveFeedTicker';
+import SentimentTimeline from '@/components/dashboard/SentimentTimeline';
+import EngagementHeatmap from '@/components/dashboard/EngagementHeatmap';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Database } from 'lucide-react';
+import { Shield, Database, TrendingUp, Users, Activity } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 
 // Mock data for the dashboard
 const mockSentimentData = [
@@ -20,6 +25,7 @@ const mockSentimentData = [
     time: '10 min ago',
     location: 'Abu Dhabi',
     engagement: 45,
+    timestamp: Date.now() - 600000,
   },
   {
     id: 2,
@@ -30,6 +36,7 @@ const mockSentimentData = [
     time: '25 min ago',
     location: 'Dubai',
     engagement: 78,
+    timestamp: Date.now() - 1500000,
   },
   {
     id: 3,
@@ -40,6 +47,7 @@ const mockSentimentData = [
     time: '1 hour ago',
     location: 'Sharjah',
     engagement: 32,
+    timestamp: Date.now() - 3600000,
   },
   {
     id: 4,
@@ -50,6 +58,7 @@ const mockSentimentData = [
     time: '2 hours ago',
     location: 'Fujairah',
     engagement: 56,
+    timestamp: Date.now() - 7200000,
   },
   {
     id: 5,
@@ -60,6 +69,7 @@ const mockSentimentData = [
     time: '3 hours ago',
     location: 'Ras Al Khaimah',
     engagement: 92,
+    timestamp: Date.now() - 10800000,
   },
   {
     id: 6,
@@ -70,6 +80,7 @@ const mockSentimentData = [
     time: '4 hours ago',
     location: 'Dubai',
     engagement: 64,
+    timestamp: Date.now() - 14400000,
   },
 ];
 
@@ -83,6 +94,9 @@ const DashboardPage = () => {
     search: '',
   });
 
+  // Use real-time data hook
+  const { data: liveData, newItemId } = useRealTimeData(mockSentimentData, 10000);
+
   // Ensure user is authenticated
   useEffect(() => {
     if (!isAuthenticated) {
@@ -91,7 +105,7 @@ const DashboardPage = () => {
   }, [isAuthenticated, navigate]);
 
   // Filter data based on current filters
-  const filteredData = mockSentimentData.filter((item) => {
+  const filteredData = liveData.filter((item) => {
     if (filters.platform !== 'all' && item.platform !== filters.platform) return false;
     if (filters.region !== 'all' && !item.location.toLowerCase().includes(filters.region.toLowerCase().replace('-', ' '))) return false;
     if (filters.sentiment !== 'all' && item.sentiment !== filters.sentiment) return false;
@@ -106,6 +120,37 @@ const DashboardPage = () => {
     negative: filteredData.filter(item => item.sentiment === 'negative').length,
     total: filteredData.length,
   };
+
+  // Timeline data for sentiment flow
+  const timelineData = useMemo(() => {
+    const now = Date.now();
+    return Array.from({ length: 12 }, (_, i) => {
+      const time = new Date(now - (11 - i) * 5 * 60 * 1000);
+      return {
+        time: time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        positive: Math.floor(Math.random() * 15) + 5,
+        neutral: Math.floor(Math.random() * 10) + 3,
+        negative: Math.floor(Math.random() * 8) + 2,
+      };
+    });
+  }, []);
+
+  // Heatmap data for regional engagement
+  const heatmapData = useMemo(() => [
+    { region: 'Abu Dhabi', engagement: 145, sentiment: 'positive' as const },
+    { region: 'Dubai', engagement: 198, sentiment: 'positive' as const },
+    { region: 'Sharjah', engagement: 87, sentiment: 'neutral' as const },
+    { region: 'Ajman', engagement: 56, sentiment: 'neutral' as const },
+    { region: 'Fujairah', engagement: 42, sentiment: 'positive' as const },
+    { region: 'RAK', engagement: 73, sentiment: 'negative' as const },
+  ], []);
+
+  // Recent activity for live ticker
+  const recentActivity = useMemo(() => 
+    liveData.slice(0, 5).map(item => 
+      `New ${item.sentiment} sentiment from ${item.location} on ${item.platform}`
+    ), [liveData]
+  );
 
   return (
     <Layout>
@@ -137,9 +182,50 @@ const DashboardPage = () => {
             <SentimentFilter onFilterChange={setFilters} filters={filters} />
           </div>
 
+          {/* Quick Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <AnimatedMetricCard
+              value={metrics.total}
+              label="Total Sentiments"
+              color="blue"
+              icon={<Activity className="h-5 w-5" />}
+              previousValue={metrics.total - 2}
+            />
+            <AnimatedMetricCard
+              value={metrics.positive}
+              label="Positive"
+              color="green"
+              icon={<TrendingUp className="h-5 w-5" />}
+              previousValue={metrics.positive - 1}
+            />
+            <AnimatedMetricCard
+              value={metrics.neutral}
+              label="Neutral"
+              color="blue"
+              icon={<Users className="h-5 w-5" />}
+              previousValue={metrics.neutral}
+            />
+            <AnimatedMetricCard
+              value={metrics.negative}
+              label="Negative"
+              color="red"
+              icon={<Database className="h-5 w-5" />}
+              previousValue={metrics.negative}
+            />
+          </div>
+
+          {/* Live Feed Ticker */}
+          <div className="mb-6">
+            <LiveFeedTicker recentActivity={recentActivity} />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <div className="bg-secondary border border-gray-700 p-4 rounded-lg shadow-md mb-6">
+            <div className="lg:col-span-2 space-y-6">
+              {/* Sentiment Timeline */}
+              <SentimentTimeline data={timelineData} />
+
+              {/* Sentiment Cards */}
+              <div className="bg-secondary/50 backdrop-blur-sm border border-gray-700 p-4 rounded-lg shadow-lg">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <div className="h-2 w-2 rounded-full bg-primary animate-pulse mr-2"></div>
@@ -154,34 +240,38 @@ const DashboardPage = () => {
                 </div>
                 
                 {filteredData.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500 bg-gray-800 border border-gray-700 rounded">
+                  <div className="text-center py-8 text-gray-500 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded">
                     <div className="terminal-text">NO DATA MATCHING CURRENT FILTERS</div>
                     <div className="text-xs text-gray-400 mt-2 font-mono">Adjust parameters to view more results</div>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredData.map((item) => (
-                      <SentimentCard
-                        key={item.id}
-                        username={item.username}
-                        message={item.message}
-                        platform={item.platform}
-                        sentiment={item.sentiment}
-                        time={item.time}
-                        location={item.location}
-                        engagement={item.engagement}
-                      />
+                    {filteredData.slice(0, 10).map((item) => (
+                      <div key={item.id} className={item.id === newItemId ? 'animate-slide-in' : ''}>
+                        <SentimentCard
+                          username={item.username}
+                          message={item.message}
+                          platform={item.platform}
+                          sentiment={item.sentiment}
+                          time={item.time}
+                          location={item.location}
+                          engagement={item.engagement}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
             </div>
 
-            <div>
+            <div className="space-y-6">
+              {/* Engagement Heatmap */}
+              <EngagementHeatmap data={heatmapData} />
+
               <SentimentMetrics metrics={metrics} />
               
               {/* Terminal-style system status widget */}
-              <div className="mt-6 bg-gray-800 border border-gray-700 p-4 rounded-lg shadow-md">
+              <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-4 rounded-lg shadow-lg">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-mono text-primary text-sm flex items-center">
                     <span className="h-2 w-2 rounded-full status-online mr-2"></span>
