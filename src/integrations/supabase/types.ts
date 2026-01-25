@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agent_reports: {
+        Row: {
+          content: string
+          county: string | null
+          created_at: string | null
+          id: string
+          platform: string
+          risk_level: string | null
+          sentiment: string | null
+        }
+        Insert: {
+          content: string
+          county?: string | null
+          created_at?: string | null
+          id?: string
+          platform: string
+          risk_level?: string | null
+          sentiment?: string | null
+        }
+        Update: {
+          content?: string
+          county?: string | null
+          created_at?: string | null
+          id?: string
+          platform?: string
+          risk_level?: string | null
+          sentiment?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
