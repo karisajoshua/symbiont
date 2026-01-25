@@ -54,6 +54,12 @@ const Header = () => {
       always: true
     }, 
     {
+      name: 'Agent Map',
+      path: '/agent-map',
+      icon: <Database size={14} className="mr-1" />,
+      always: true
+    }, 
+    {
       name: 'Insights',
       path: '/insights',
       icon: <Database size={14} className="mr-1" />,
