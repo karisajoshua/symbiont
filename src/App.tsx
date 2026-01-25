@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/DashboardPage";
 import MapPage from "./pages/MapPage";
+import AgentMapPage from "./pages/AgentMapPage";
 import InsightsPage from "./pages/InsightsPage";
 import ReportsPage from "./pages/ReportsPage";
 import AboutPage from "./pages/AboutPage";
@@ -40,6 +41,11 @@ const App: React.FC = () => {
                   <Route path="/map" element={
                     <ProtectedRoute>
                       <MapPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/agent-map" element={
+                    <ProtectedRoute>
+                      <AgentMapPage />
                     </ProtectedRoute>
                   } />
                   <Route path="/insights" element={
