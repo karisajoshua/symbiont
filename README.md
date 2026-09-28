@@ -1,124 +1,24 @@
-# 📱 Symbiont
+# Symbiont
 
-Welcome to the official repository for the **SYMBIONT** – a robust social engagement and performance analytics platform designed for **UAE**. This platform provides real-time insights, user interaction tracking, and sentiment analysis across multiple social media channels.
+A social sentiment and geographic reporting **prototype** built with React, TypeScript, Vite, Tailwind CSS, and Supabase.
 
----
+## What the repository contains
 
-## 🌟 Overview
+- Dashboard views for sentiment metrics, timelines, feeds, filters, and regional maps.
+- A Supabase-backed `agent_reports` feed with a subscription for new report records.
+- A `symbiont-brain` Edge Function that selects a sample post, asks an AI model to classify sentiment, county, and risk, then stores a report.
+- Separate simulated data providers and dashboard examples for interface exploration.
 
-**SYMBIONT** to:
+**Implementation status:** The social posts processed by the Edge Function are hard-coded samples. Several dashboard views generate simulated activity locally. This repository does not demonstrate live ingestion from social platform APIs, verified production analytics, or a deployed multi-platform monitoring service. Some UI copy uses terms such as “live”; read that as a demo interface unless it is connected to the Supabase reports path.
 
-* Monitor social media mentions and conversations
-* Analyze audience sentiment and engagement
-* Track content performance and brand visibility
-* Streamline reporting for marketing and communications strategy
+## Run locally
 
-Whether you're launching a campaign, managing brand reputation, or gauging public response, SYMBIONT ensures you stay informed and responsive.
+Install dependencies with `npm install`, then run `npm run dev`. See `package.json` for the available scripts. Supabase-dependent features need a configured Supabase project and the Edge Function's required server-side environment variables. Keep service-role and AI gateway keys out of client environment files.
 
----
+## Architecture notes
 
-## ⚙️ Core Features
+The UI is in `src/pages` and `src/components`. `src/hooks/useAgentReports.tsx` reads and subscribes to the `agent_reports` table. `supabase/functions/symbiont-brain/index.ts` contains the sample-post analysis flow; the schema is under `supabase/migrations`. `src/hooks/useRealTimeData.tsx` and `src/components/common/SimulatedDataProvider.tsx` provide generated demo feeds.
 
-* 📊 **Real-Time Dashboards**: Track posts, likes, shares, and sentiment in one view
-* 📈 **Analytics Engine**: Compare engagement across platforms (X, Facebook, Instagram, LinkedIn, TikTok)
-* 🧠 **Sentiment Analysis**: AI-powered classification of positive, neutral, and negative comments
-* 💬 **Mention Tracker**: Detect brand, product, or keyword mentions across platforms
-* 🔔 **Alerts & Notifications**: Get alerts for trending spikes or PR risks
-* 📥 **Report Export**: Generate branded reports in PDF/CSV formats
-* 👥 **Team Collaboration**: Multi-user support with access controls and activity logs
+## Next steps
 
----
-
-## 🛠️ Tech Stack
-
-* **Frontend**: React.js + Tailwind CSS
-* **Backend**: Node.js + Express
-* **Database**: MongoDB / PostgreSQL
-* **Integrations**: Meta Graph API, X API, TikTok Developer API
-* **Deployment**: Docker + Nginx + AWS (or applicable environment)
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-* Node.js 18+
-* MongoDB or PostgreSQL
-* API keys for social platforms (Meta, X, etc.)
-
-### Installation
-
-```bash
-git clone https://github.com/GUT-Inc/social-pulse-platform.git
-cd social-pulse-platform
-npm install
-npm run dev
-```
-
----
-
-## 🧪 Testing
-
-```bash
-npm run test
-```
-
----
-
-## 📁 Project Structure
-
-```
-social-pulse-platform/
-├── client/             # Frontend (React)
-├── server/             # Backend (Express API)
-├── config/             # Environment and database configs
-├── scripts/            # Automation and cron jobs
-└── README.md
-```
-
----
-
-## 🔐 Security & Privacy
-
-* GDPR-compliant data handling
-* Encrypted access tokens and OAuth2 login support
-* Data retention policy configurable by admin
-
----
-
-## 📌 Roadmap
-
-* 🔄 Auto-responding bots based on sentiment triggers
-* 📱 Mobile app (iOS & Android)
-* 🌍 Multilingual support
-* 🧩 Custom plugin system for enterprise users
-
----
-
-## 🤝 Contributing
-
-Want to improve Social Pulse? We welcome contributions!
-
-1. Fork the repo
-2. Create your feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
-
----
-
-## 📬 Contact
-
-For questions, feedback, or partnerships:
-
-📧 **[info@symbiont.org](mailto:info@symbiont.org)**
-🌐 **[https://symbiont.org](https://symbiont.org)**
-
----
-
-## 📝 License
-
-© 2025 GUT – All Rights Reserved. This project is licensed under the [MIT License](LICENSE).
-
-
+Replace sample posts with authorized data ingestion, connect dashboard views consistently to stored reports, implement and verify server-enforced access controls, add tests for the analysis and reporting flow, and document deployment and data handling before production use.
