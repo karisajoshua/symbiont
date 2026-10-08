@@ -1,4 +1,4 @@
 project_id = "vuwmywxqxbibfxecncag"
 
 [functions.symbiont-brain]
-verify_jwt = false
+verify_jwt = true

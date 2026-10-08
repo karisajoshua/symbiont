@@ -40,7 +40,28 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
+    // Verify identity server-side before using the privileged database client.
+    const bearer = req.headers.get("Authorization")?.match(/^Bearer (.+)$/i)?.[1];
+    if (!bearer) {
+      return new Response(JSON.stringify({ error: "Authentication required" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const authClient = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const { data: authData, error: authError } = await authClient.auth.getUser(bearer);
+    if (authError || !authData.user) {
+      return new Response(JSON.stringify({ error: "Invalid session" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -120,15 +141,20 @@ Return JSON only: {"sentiment": "", "county": "", "risk_level": ""}`
       analysis = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError);
-      // Fallback analysis
-      analysis = {
-        sentiment: "Neutral",
-        county: "Nairobi",
-        risk_level: "Low"
-      };
+      throw new Error("AI returned invalid JSON; no report was created");
     }
 
-    console.log("🧠 ANALYST parsed result:", analysis);
+    // Never trust generated JSON without explicit allowlist validation.
+    const validSentiments = ["Positive", "Negative", "Neutral"];
+    const validRisks = ["High", "Medium", "Low"];
+    if (!analysis || typeof analysis !== "object" ||
+        !validSentiments.includes(analysis.sentiment) ||
+        !KENYA_COUNTIES.includes(analysis.county) ||
+        !validRisks.includes(analysis.risk_level)) {
+      throw new Error("AI classification failed validation; no report was created");
+    }
+
+    console.log("🧠 ANALYST validated result:", analysis);
 
     // Step 3: Report to database (the REPORTER agent)
     console.log(`📝 REPORTER: Filing report for ${analysis.county}...`);
